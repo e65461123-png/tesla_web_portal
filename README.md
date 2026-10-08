@@ -1,4 +1,15 @@
-# 🌌 Tesla Temporal Portal & Frequency Resonance Engine
+# [ منصة بوابة تسلا الزمنية ] - Tesla Time Portal
 
-An advanced interactive web application merging Albert Einstein's Special Relativity with Nikola Tesla's universal frequency architecture (3-6-9).
-Lead Architect: EssamElkomy369
+// ARCHITECT: EssamElkomy369 //
+
+منصة ويب متقدمة لحساب وتطويع مفاهيم الفيزياء النسبية (معامل لورنتز، زمن الأرض، القفزة الزمنية، الطاقة الحركية، وحسابات المادة المضادة) بتصميم ويب تفاعلي وديناميكي.
+
+## 🚀 التقنيات المستخدمة:
+- **Backend:** Python, Flask
+- **Frontend:** HTML5, CSS3, JavaScript
+- **Physics Engine:** النسبية الخاصة لأينشتاين
+
+## ⚙️ طريقة التشغيل:
+1. ثبت المتطلبات:
+   ```bash
+   pip install -r requirements.txt
