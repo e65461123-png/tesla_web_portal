@@ -1,0 +1,49 @@
+from flask import Flask, render_template, jsonify, request
+import math
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/tesla_369')
+def tesla_369():
+    return render_template('tesla_369.html')
+
+@app.route('/calculate_relativity', methods=['POST'])
+def calculate_relativity():
+    data = request.get_json()
+    try:
+        v = float(data.get('velocity', 0.9))
+        t0 = float(data.get('proper_time', 5))
+        
+        if v >= 1.0 or v < 0:
+            return jsonify({'error': 'السرعة يجب أن تكون أقل من سرعة الضوء c'}), 400
+            
+        gamma = 1 / math.sqrt(1 - v*v)
+        earth_time = t0 * gamma
+        future_jump = earth_time - t0
+        
+        return jsonify({
+            'gamma': round(gamma, 3),
+            'earth_time': round(earth_time, 2),
+            'future_jump': round(future_jump, 2),
+            'status': 'RESONANCE_STABLE_369'
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/get_matrix_data')
+def get_matrix_data():
+    return jsonify({
+        'frequency': 369.185,
+        'depth': 23
+    })
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)

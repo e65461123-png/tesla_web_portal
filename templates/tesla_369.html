@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tesla 369 Frequency Generator</title>
+    <style>
+        body { background-color: #050b08; color: #00ffcc; font-family: 'Courier New', Courier, monospace; margin: 0; padding: 10px; text-align: center; }
+        h2 { border-bottom: 2px dashed #00ffcc; padding-bottom: 5px; }
+        .panel { background: rgba(0, 20, 10, 0.8); border: 1px solid #00ffcc; padding: 20px; margin: 15px auto; border-radius: 8px; max-width: 600px; box-shadow: 0 0 15px rgba(0, 255, 204, 0.2); text-align: left; }
+        .center-panel { text-align: center; }
+        .btn { background: #ff007f; color: #fff; border: none; padding: 12px 25px; font-weight: bold; cursor: pointer; border-radius: 5px; margin: 8px; font-size: 14px; }
+        .btn:hover { background: #ff3399; }
+        .btn-secondary { background: transparent; border: 1px solid #00ffcc; color: #00ffcc; text-decoration: none; padding: 5px 10px; border-radius: 4px; display: inline-block; }
+        
+        .circle-viz { width: 120px; height: 120px; border: 3px dashed #00ffcc; border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #ff007f; transition: 0.3s; }
+        
+        /* أنيميشن نبض الدائرة عند تشغيل الصوت */
+        .circle-viz.active {
+            animation: pulse 1s infinite;
+            box-shadow: 0 0 30px #ff007f;
+            border-color: #ff007f;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        input[type="range"] { width: 100%; accent-color: #00ffcc; cursor: pointer; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="center-panel">
+        <h2>[ Tesla Universal Frequency Resonance (3 - 6 - 9) ]</h2>
+        <p style="font-size: 11px; color: #88ffcc;">// ARCHITECT: EssamElkomy369 //</p>
+
+        <div style="margin-bottom: 15px;">
+            <a href="/" class="btn-secondary">Relativity Portal</a>
+            <a href="/tesla_369" class="btn-secondary" style="background:rgba(0,255,204,0.1);">Tesla 369 🌊</a>
+            <a href="/about" class="btn-secondary">About 📜</a>
+        </div>
+    </div>
+
+    <div class="panel center-panel">
+        <p>Select or customize a cosmic frequency to activate energy field:</p>
+        <button class="btn" onclick="playTone(369)">Activate 369 Hz ⚡</button>
+        <button class="btn" onclick="playTone(432)">Activate 432 Hz 🌿</button>
+        <button class="btn" onclick="playTone(528)">Activate 528 Hz 🧬</button>
+
+        <div style="margin: 20px 0; padding: 10px; border: 1px dashed #00ffcc; border-radius: 6px;">
+            <label>Custom Frequency Slider: <span id="freq_display" style="color:#ff007f; font-weight:bold;">369 Hz</span></label>
+            <input type="range" id="freq_slider" min="100" max="1000" value="369" 
+                   oninput="document.getElementById('freq_display').innerText = this.value + ' Hz'">
+            <button class="btn" style="background:#00ffcc; color:#050b08;" onclick="playTone(parseInt(document.getElementById('freq_slider').value))">
+                🎵 Play Custom Tone
+            </button>
+        </div>
+
+        <div class="circle-viz" id="viz_circle">369</div>
+        <p id="status_text" style="color: #fff;">Status: Ready for broadcast...</p>
+        <button class="btn btn-secondary" onclick="stopTone()" style="background:#ff007f; color:#fff; border:none;">Stop Tone ⏹</button>
+    </div>
+
+    <!-- قسم شرح سر الأرقام 3-6-9 -->
+    <div class="panel">
+        <h3 style="color:#ff007f; text-align:center;">🔢 The Secret of 3-6-9</h3>
+        <p style="text-align: center; font-style: italic; color:#88ffcc;">"If you only knew the magnificence of the 3, 6 and 9, then you would have a key to the universe." — Nikola Tesla</p>
+        <p>Tesla believed these numbers were fundamental to understanding universal energy, vortex math, and vibrational resonance.</p>
+        <p>• <strong>369 Hz:</strong> Frequency of universal alignment and higher consciousness.</p>
+        <p>• <strong>432 Hz:</strong> Frequency of natural harmony and deep relaxation.</p>
+        <p>• <strong>528 Hz:</strong> The DNA repair and transformation frequency (Love frequency).</p>
+    </div>
+
+    <script>
+        let currentOsc = null;
+        let currentAudioCtx = null;
+
+        function playTone(freq) {
+            stopTone();
+            try {
+                currentAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                currentOsc = currentAudioCtx.createOscillator();
+                const gainNode = currentAudioCtx.createGain();
+
+                currentOsc.type = 'sine';
+                currentOsc.frequency.setValueAtTime(freq, currentAudioCtx.currentTime);
+
+                gainNode.gain.setValueAtTime(0.2, currentAudioCtx.currentTime);
+
+                currentOsc.connect(gainNode);
+                gainNode.connect(currentAudioCtx.destination);
+
+                currentOsc.start();
+                
+                const viz = document.getElementById('viz_circle');
+                viz.innerText = freq;
+                viz.classList.add('active');
+                document.getElementById('status_text').innerText = 'Status: Broadcasting ' + freq + ' Hz frequency...';
+            } catch(e) {
+                console.log(e);
+            }
+        }
+
+        function stopTone() {
+            if (currentOsc) {
+                try {
+                    currentOsc.stop();
+                    currentOsc.disconnect();
+                } catch(e){}
+                currentOsc = null;
+            }
+            if (currentAudioCtx) {
+                currentAudioCtx.close();
+                currentAudioCtx = null;
+            }
+            const viz = document.getElementById('viz_circle');
+            viz.classList.remove('active');
+            viz.style.borderColor = '#00ffcc';
+            document.getElementById('status_text').innerText = 'Status: Standby / Stopped';
+        }
+    </script>
+</body>
+</html>

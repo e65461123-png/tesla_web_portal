@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة بوابة تسلا الزمنية</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background-color: #050b08; color: #00ffcc; font-family: 'Courier New', Courier, monospace; margin: 0; padding: 10px; text-align: center; }
+        h2 { border-bottom: 2px dashed #00ffcc; padding-bottom: 5px; }
+        .panel { background: rgba(0, 20, 10, 0.8); border: 1px solid #00ffcc; padding: 15px; margin: 10px auto; border-radius: 8px; max-width: 600px; box-shadow: 0 0 15px rgba(0, 255, 204, 0.2); }
+        input[type="range"] { width: 100%; accent-color: #00ffcc; cursor: pointer; }
+        .btn { background: #ff007f; color: #fff; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; margin: 5px; }
+        .btn:hover { background: #ff3399; }
+        .btn-secondary { background: transparent; border: 1px solid #00ffcc; color: #00ffcc; }
+        .btn-secondary:hover { background: rgba(0,255,204,0.1); }
+        table { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 11px; }
+        th, td { border: 1px solid #00ffcc; padding: 5px; text-align: center; }
+        th { background: rgba(0, 255, 204, 0.1); }
+        .twin-bar { display: flex; height: 12px; background: #000; border: 1px solid #00ffcc; border-radius: 6px; overflow: hidden; margin-top: 8px; }
+        .trav-progress { background: #00ffcc; width: 50%; transition: width 0.3s; }
+        .earth-progress { background: #ff007f; width: 50%; transition: width 0.3s; }
+    </style>
+</head>
+<body>
+
+    <h2>[ منصة بوابة تسلا الزمنية ]</h2>
+    <p style="font-size: 11px; color: #88ffcc;">// ARCHITECT: EssamElkomy369 //</p>
+
+    <div style="margin-bottom: 15px;">
+        <a href="/" class="btn" style="background:#00ffcc; color:#050b08; text-decoration:none; padding:5px 10px;">النسبية</a>
+        <a href="/tesla_369" class="btn btn-secondary" style="text-decoration:none; padding:5px 10px;">ترددات 369 🌊</a>
+        <a href="/about" class="btn btn-secondary" style="text-decoration:none; padding:5px 10px;">About 📜</a>
+    </div>
+
+    <div class="panel">
+        <label>سرعة المركبة (v/c) : <span id="vc_val">0.50</span></label>
+        <input type="range" id="vc_slider" min="0.1" max="0.99" step="0.01" value="0.5">
+
+        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+            <div><label>عمر المسافر:</label><br><input type="number" id="traveler_age" value="35" style="width: 80px; text-align:center; background:#000; color:#00ffcc; border:1px solid #00ffcc;"></div>
+            <div><label>كتلة المركبة (طن):</label><br><input type="number" id="ship_mass" value="1000" style="width: 80px; text-align:center; background:#000; color:#00ffcc; border:1px solid #00ffcc;"></div>
+        </div>
+
+        <div style="margin-top: 15px; display: flex; justify-content: space-around; flex-wrap: wrap;">
+            <button class="btn" id="warp_btn">🚀 تفعيل قفزة (WARP) ⚡</button>
+            <button class="btn btn-secondary" id="save_btn">💾 حفظ السيناريو</button>
+            <button class="btn btn-secondary" id="load_btn">📂 تحميل سيناريو</button>
+            <!-- عنصر إدخال الملفات المخفي لتحميل ملفات JSON -->
+            <input type="file" id="import_file" style="display:none;" accept=".json">
+        </div>
+    </div>
+
+    <div class="panel" style="text-align: right; font-size: 13px;">
+        <p>> معامل لورنتز: <span id="res_gamma" style="color:#fff; font-weight:bold;">1.155</span></p>
+        <p>> زمن الأرض: <span id="res_earth_time" style="color:#fff; font-weight:bold;">40.41</span> سنة | قفزة المستقبل: <span id="res_future_jump" style="color:#ff3399; font-weight:bold;">+5.41</span> سنة</p>
+        <p>> طول السفينة: <span id="res_ship_length" style="color:#fff;">86.6</span> م | طاقة الحركة: <span id="res_energy">165750576.8</span> هيروشيما</p>
+        <p>> المادة المضادة اللازمة: <span id="res_antimatter" style="color:#ff4444;">58.33</span> طن</p>
+        
+        <div style="border: 1px solid #ff007f; padding: 8px; margin-top: 10px; text-align: center; border-radius: 5px; background: rgba(255,0,127,0.1);">
+            👥 مفارقة التوأم: المسافر (عمره: <span id="out_trav_age">70</span> سنة) | الأرضي (عمره: <span id="out_earth_age">75.4</span> سنة)
+            <div class="twin-bar">
+                <div class="trav-progress" id="bar_trav" title="عمر المسافر"></div>
+                <div class="earth-progress" id="bar_earth" title="عمر الأرضي"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <table>
+            <thead>
+                <tr><th>v/c</th><th>Gamma</th><th>زمن الأرض</th><th>القفزة الزمنية</th><th>الحالة</th></tr>
+            </thead>
+            <tbody id="history_table">
+                <tr><td colspan="5">جاري الاتصال بالشبكة...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const vcSlider = document.getElementById('vc_slider');
+        const vcVal = document.getElementById('vc_val');
+        const travelerAgeInput = document.getElementById('traveler_age');
+        const shipMassInput = document.getElementById('ship_mass');
+        const warpBtn = document.getElementById('warp_btn');
+        const saveBtn = document.getElementById('save_btn');
+        const loadBtn = document.getElementById('load_btn');
+        const importFile = document.getElementById('import_file');
+
+        const resGamma = document.getElementById('res_gamma');
+        const resEarthTime = document.getElementById('res_earth_time');
+        const resFutureJump = document.getElementById('res_future_jump');
+        const resShipLength = document.getElementById('res_ship_length');
+        const resEnergy = document.getElementById('res_energy');
+        const resAntimatter = document.getElementById('res_antimatter');
+        const outTravAge = document.getElementById('out_trav_age');
+        const outEarthAge = document.getElementById('out_earth_age');
+        const historyTable = document.getElementById('history_table');
+        const barTrav = document.getElementById('bar_trav');
+        const barEarth = document.getElementById('bar_earth');
+
+        // تفعيل نظام الصوت الحقيقي عبر Web Audio API مع تفاعل الضغط
+        function playWarpSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                const audioCtx = new AudioContext();
+                
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.5);
+                
+                gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.5);
+            } catch(e) {
+                console.log("Audio error: ", e);
+            }
+        }
+
+        warpBtn.addEventListener('click', () => {
+            playWarpSound();
+            updateData();
+        });
+
+        // تفعيل حفظ السيناريو كملف JSON حقيقي
+        saveBtn.addEventListener('click', () => {
+            const scenario = {
+                architect: "EssamElkomy369",
+                v_c: vcSlider.value,
+                traveler_age: travelerAgeInput.value,
+                ship_mass: shipMassInput.value,
+                created_at: new Date().toISOString()
+            };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(scenario, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "tesla_scenario.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        });
+
+        // تفعيل فتح نافذة اختيار الملف للتحميل
+        loadBtn.addEventListener('click', () => {
+            importFile.click();
+        });
+
+        // استقبال ملف الـ JSON وقراءته وتطبيق القيم
+        importFile.addEventListener('change', (event) => {
+            const fileReader = new FileReader();
+            if (event.target.files[0]) {
+                fileReader.readAsText(event.target.files[0], "UTF-8");
+                fileReader.onload = function (e) {
+                    try {
+                        const parsed = JSON.parse(e.target.result);
+                        if (parsed.v_c) vcSlider.value = parsed.v_c;
+                        if (parsed.traveler_age) travelerAgeInput.value = parsed.traveler_age;
+                        if (parsed.ship_mass) shipMassInput.value = parsed.ship_mass;
+                        updateData();
+                        alert("تم تحميل السيناريو بنجاح! ⚡🚀");
+                    } catch (err) {
+                        alert("خطأ في قراءة ملف JSON!");
+                    }
+                };
+            }
+        });
+
+        function updateData() {
+            const v_c = parseFloat(vcSlider.value);
+            const age = parseFloat(travelerAgeInput.value);
+            const mass = parseFloat(shipMassInput.value);
+            vcVal.innerText = v_c.toFixed(2);
+
+            fetch('/api/calculate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ v_c: v_c, age: age, mass: mass })
+            })
+            .then(res => res.json())
+            .then(data => {
+                resGamma.innerText = data.gamma;
+                resEarthTime.innerText = data.earth_time;
+                resFutureJump.innerText = '+' + data.future_jump;
+                resShipLength.innerText = data.ship_length;
+                resEnergy.innerText = data.hiroshima_bombs;
+                resAntimatter.innerText = data.antimatter_tons;
+                
+                outTravAge.innerText = data.traveler_age;
+                outEarthAge.innerText = data.earth_age;
+
+                let total = data.traveler_age + data.earth_age;
+                let travPct = (data.traveler_age / total) * 100;
+                let earthPct = (data.earth_age / total) * 100;
+                barTrav.style.width = travPct + '%';
+                barEarth.style.width = earthPct + '%';
+
+                let rows = '';
+                if (data.history) {
+                    data.history.forEach(item => {
+                        rows += `<tr><td>${item.v_c}</td><td>${item.gamma}</td><td>${item.earth_time}س</td><td style="color:#ff3399;">+${item.future_jump}س</td><td>${item.status}</td></tr>`;
+                    });
+                }
+                historyTable.innerHTML = rows;
+            })
+            .catch(err => console.error(err));
+        }
+
+        vcSlider.addEventListener('input', updateData);
+        travelerAgeInput.addEventListener('input', updateData);
+        shipMassInput.addEventListener('input', updateData);
+        
+        updateData();
+    </script>
+</body>
+</html>

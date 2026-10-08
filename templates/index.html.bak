@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة بوابة تسلا الزمنية | EssamElkomy369</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background-color: #010103; color: #00ffcc; font-family: 'Courier New', Courier, monospace; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; margin: 0; padding: 6px; overflow-x: hidden; }
+        canvas.starfield-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+        h1 { font-size: 0.75rem; text-shadow: 0 0 10px #00ffcc; text-align: center; margin-bottom: 2px; letter-spacing: 1px; }
+        .dev-credit { font-size: 0.55rem; color: #ff0055; text-align: center; margin-bottom: 5px; letter-spacing: 2px; text-shadow: 0 0 5px rgba(255,0,85,0.6); }
+        .hub-nav { display: flex; gap: 4px; width: 100%; max-width: 380px; margin-bottom: 6px; }
+        .hub-tab { flex: 1; background: rgba(0, 255, 204, 0.05); border: 1px solid #00ffcc; color: #00ffcc; padding: 4px; font-size: 0.6rem; text-align: center; text-decoration: none; font-family: monospace; transition: 0.2s; box-sizing: border-box; }
+        .hub-tab.active, .hub-tab:hover { background: #00ffcc; color: #010103; font-weight: bold; box-shadow: 0 0 8px #00ffcc; }
+        .panel { width: 100%; max-width: 380px; border: 1px solid #00ffcc; padding: 6px 8px; background: rgba(0, 255, 204, 0.03); box-shadow: 0 0 15px rgba(0, 255, 204, 0.15); margin-bottom: 6px; box-sizing: border-box; backdrop-filter: blur(3px); }
+        .group { margin-bottom: 5px; }
+        label { font-size: 0.65rem; display: block; margin-bottom: 2px; color: #88ffcc; }
+        input[type="range"] { width: 100%; accent-color: #00ffcc; background: #030307; cursor: pointer; }
+        input[type="number"] { width: 100%; background: #030307; border: 1px solid #00ffcc; color: #00ffcc; padding: 3px; font-family: monospace; box-sizing: border-box; font-size: 0.7rem; }
+        .val-display { float: left; color: #ff0055; font-weight: bold; }
+        .result-box { font-size: 0.63rem; line-height: 1.3; border-top: 1px dashed #00ffcc; padding-top: 4px; margin-top: 4px; }
+        .advanced-physics { font-size: 0.6rem; color: #00ddff; border-top: 1px solid rgba(0,255,204,0.2); padding-top: 3px; margin-top: 3px; }
+        .fuel-box { font-size: 0.6rem; color: #ffbb00; border-top: 1px solid rgba(255,187,0,0.2); padding-top: 3px; margin-top: 3px; }
+        .warning-box { font-size: 0.6rem; color: #ff3366; text-align: center; margin-top: 2px; font-weight: bold; min-height: 12px; }
+        .matrix-box { font-size: 0.58rem; color: #00aa88; text-align: center; margin-top: 3px; border-top: 1px solid rgba(0,255,204,0.15); padding-top: 2px; }
+        .chart-container { width: 100%; height: 90px; margin-top: 4px; }
+        .controls-row { display: flex; gap: 4px; margin-top: 4px; }
+        .btn-warp { flex: 1; background: #ff0055; color: #fff; border: none; padding: 4px; font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 0.65rem; cursor: pointer; box-shadow: 0 0 8px rgba(255,0,85,0.5); }
+        .twins-box { border: 1px solid rgba(0,255,204,0.3); background: rgba(0,0,0,0.5); padding: 4px; margin-top: 4px; font-size: 0.6rem; display: flex; justify-content: space-around; text-align: center; }
+        .twin-card span { color: #ff0055; font-weight: bold; }
+        .history-section { border-top: 1px solid rgba(0,255,204,0.3); margin-top: 4px; padding-top: 3px; font-size: 0.58rem; max-height: 65px; overflow-y: auto; }
+        .history-table { width: 100%; border-collapse: collapse; color: #88ffcc; }
+        .history-table th, .history-table td { border: 1px solid rgba(0,255,204,0.2); padding: 2px; text-align: center; }
+        .glitch { animation: glitchEffect 0.3s cubic-bezier(.25, .46, .45, .94) both; }
+        @keyframes glitchEffect {
+            0% { transform: translate(0); filter: hue-rotate(0deg); }
+            20% { transform: translate(-3px, 3px); filter: hue-rotate(90deg); }
+            40% { transform: translate(-3px, -3px); filter: hue-rotate(180deg); }
+            60% { transform: translate(3px, 3px); filter: hue-rotate(270deg); }
+            80% { transform: translate(3px, -3px); filter: hue-rotate(360deg); }
+            100% { transform: translate(0); filter: hue-rotate(0deg); }
+        }
+    </style>
+</head>
+<body id="mainBody">
+    <canvas class="starfield-canvas" id="spaceCanvas"></canvas>
+    <h1>[ منصة بوابة تسلا الزمنية ]</h1>
+    <div class="dev-credit">// ARCHITECT: EssamElkomy369 //</div>
+
+    <div class="hub-nav">
+        <a href="/about" class="hub-tab">📜 About</a>
+        <a href="/tesla_369" class="hub-tab">🌊 ترددات 369</a>
+        <a href="/" class="hub-tab active">🧬 النسبية</a>
+    </div>
+
+    <div class="panel">
+        <div class="group">
+            <label>سرعة المركبة (v/c): <span id="v_val" class="val-display">0.90</span></label>
+            <input type="range" id="velocity" min="0.01" max="0.99" step="0.01" value="0.90">
+        </div>
+
+        <div style="display: flex; gap: 5px;">
+            <div class="group" style="flex:1;">
+                <label>زمن المسافر (سنوات):</label>
+                <input type="number" id="proper_time" step="1" value="5">
+            </div>
+            <div class="group" style="flex:1;">
+                <label>كتلة المركبة (طن):</label>
+                <input type="number" id="ship_mass" step="100" value="1000">
+            </div>
+        </div>
+
+        <div class="controls-row">
+            <button class="btn-warp" id="warpBtn">🚀 تفعيل قفزة WARP (0.99c)</button>
+        </div>
+
+        <div class="twins-box">
+            <div class="twin-card">🧑‍🚀 المسافر (عمره): <span id="twin_traveler">35</span> سنة</div>
+            <div class="twin-card">🌍 الأرضي (عمره): <span id="twin_earth">46.5</span> سنة</div>
+        </div>
+
+        <div class="result-box" id="output">> جاري تحميل محرك لورنتز...</div>
+        <div class="advanced-physics" id="physics_output">> طول السفينة: -- | طاقة الحركة: --</div>
+        <div class="fuel-box" id="fuel_output">⚡ وقود المادة المضادة المطلوبة: --</div>
+        <div class="warning-box" id="warning_msg"></div>
+
+        <div class="chart-container">
+            <canvas id="relativityChart"></canvas>
+        </div>
+
+        <div class="history-section">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
+                <span style="color:#00ffcc; font-weight:bold;">سجل العمليات (History):</span>
+                <button id="clearHistory" style="background:transparent; color:#ff0055; border:1px solid #ff0055; font-size:0.55rem; cursor:pointer;">مسح</button>
+            </div>
+            <table class="history-table">
+                <thead><tr><th>v/c</th><th>Gamma</th><th>زمن الأرض</th><th>الحالة</th></tr></thead>
+                <tbody id="historyBody"><tr><td colspan="4" style="text-align:center;">لا توجد عمليات مسجلة</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="matrix-box" id="matrix_status">> صانع النظام: EssamElkomy369 | تردد الحقل: 369.185 Hz | عمق الكم: 23</div>
+
+    <script>
+        const canvas = document.getElementById('spaceCanvas');
+        const ctxCanvas = canvas.getContext('2d');
+        let width, height;
+        function resizeCanvas() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const stars = Array.from({ length: 150 }, () => ({ x: (Math.random() - 0.5) * width, y: (Math.random() - 0.5) * height, z: Math.random() * width }));
+
+        function drawStars(speedFactor) {
+            ctxCanvas.fillStyle = '#010103';
+            ctxCanvas.fillRect(0, 0, width, height);
+            const cx = width / 2, cy = height / 2;
+            stars.forEach(star => {
+                star.z -= speedFactor * 15;
+                if (star.z <= 0) star.z = width;
+                const k = 250 / star.z;
+                const px = star.x * k + cx, py = star.y * k + cy;
+                if (px >= 0 && px <= width && py >= 0 && py <= height) {
+                    const size = Math.max(1, (1 - star.z / width) * 2.5);
+                    ctxCanvas.fillStyle = speedFactor > 0.9 ? '#ff0055' : '#00ffcc';
+                    ctxCanvas.beginPath();
+                    ctxCanvas.arc(px, py, size, 0, Math.PI * 2);
+                    ctxCanvas.fill();
+                }
+            });
+            requestAnimationFrame(() => drawStars(parseFloat(document.getElementById('velocity').value)));
+        }
+        drawStars(0.9);
+
+        const velocities = [], gammaValues = [];
+        for (let v = 0.1; v <= 0.99; v += 0.03) {
+            velocities.push(v.toFixed(2));
+            gammaValues.push(parseFloat((1 / Math.sqrt(1 - v * v)).toFixed(2)));
+        }
+
+        const ctxChart = document.getElementById('relativityChart').getContext('2d');
+        const relativityChart = new Chart(ctxChart, {
+            type: 'line',
+            data: {
+                labels: velocities,
+                datasets: [{ label: 'معامل لورنتز', data: gammaValues, borderColor: '#00ffcc', backgroundColor: 'rgba(0, 255, 204, 0.08)', borderWidth: 1.5, pointRadius: 1, fill: true, tension: 0.4 }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    x: { ticks: { color: '#00ffcc', font: { size: 6 }, maxTicksLimit: 6 }, grid: { color: 'rgba(0,255,204,0.04)' } },
+                    y: { min: 1, max: 8, ticks: { color: '#00ffcc', font: { size: 6 }, stepSize: 2 }, grid: { color: 'rgba(0,255,204,0.04)' } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        let historyLog = [];
+        function calculate() {
+            const v = parseFloat(document.getElementById('velocity').value);
+            const t0 = parseFloat(document.getElementById('proper_time').value);
+            const massTon = parseFloat(document.getElementById('ship_mass').value) || 1000;
+            document.getElementById('v_val').innerText = v;
+
+            const warnBox = document.getElementById('warning_msg');
+            const body = document.getElementById('mainBody');
+            if (v > 0.95) {
+                warnBox.innerHTML = "⚠ تحذير [EssamElkomy369]: الطاقة تؤول إلى اللانهاية!";
+                body.style.boxShadow = "inset 0 0 30px rgba(255,0,85,0.4)";
+            } else {
+                warnBox.innerHTML = "";
+                body.style.boxShadow = "none";
+            }
+
+            const gamma = 1 / Math.sqrt(1 - v * v);
+            const contractedLength = (100 / gamma).toFixed(1);
+            const kineticEnergyJoules = (gamma - 1) * (massTon * 1000) * (3e8 * 3e8);
+            const hiroshimaBobs = (kineticEnergyJoules / 6.3e13).toFixed(1);
+
+            document.getElementById('physics_output').innerHTML = `> طول السفينة: <strong>${contractedLength} م</strong> | طاقة الحركة: <strong>${hiroshimaBobs} هيروشيما</strong>`;
+            const antimatterKg = kineticEnergyJoules / (3e8 * 3e8);
+            let antimatterDisplay = antimatterKg > 1000 ? (antimatterKg / 1000).toFixed(2) + " طن" : antimatterKg.toFixed(2) + " كجم";
+            document.getElementById('fuel_output').innerHTML = `⛽ المادة المضادة اللازمة: <strong>${antimatterDisplay}</strong>`;
+
+            document.getElementById('twin_traveler').innerText = (30 + t0).toFixed(1);
+            document.getElementById('twin_earth').innerText = (30 + (t0 * gamma)).toFixed(1);
+
+            fetch('/calculate_relativity', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ velocity: v, proper_time: t0 })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(!data.error) {
+                    document.getElementById('output').innerHTML = `> معامل لورنتز: <strong>${data.gamma}</strong><br>> زمن الأرض: <strong>${data.earth_time} سنة</strong><br>> قفزة المستقبل: <strong>+${data.future_jump} سنة</strong>`;
+                    historyLog.unshift({ v, gamma: data.gamma, earthTime: data.earth_time, status: data.status });
+                    if(historyLog.length > 8) historyLog.pop();
+                    const tbody = document.getElementById('historyBody');
+                    tbody.innerHTML = '';
+                    historyLog.forEach(item => {
+                        tbody.innerHTML += `<tr><td>${item.v}</td><td>${item.gamma}</td><td>${item.earthTime}س</td><td>${item.status}</td></tr>`;
+                    });
+                }
+            });
+        }
+
+        document.getElementById('clearHistory').addEventListener('click', () => {
+            historyLog = [];
+            document.getElementById('historyBody').innerHTML = `<tr><td colspan="4" style="text-align:center;">لا توجد عمليات مسجلة</td></tr>`;
+        });
+
+        document.getElementById('warpBtn').addEventListener('click', () => {
+            document.getElementById('velocity').value = 0.99;
+            const body = document.getElementById('mainBody');
+            body.classList.add('glitch');
+            setTimeout(() => body.classList.remove('glitch'), 300);
+            calculate();
+        });
+
+        document.getElementById('velocity').addEventListener('input', calculate);
+        document.getElementById('proper_time').addEventListener('input', calculate);
+        document.getElementById('ship_mass').addEventListener('input', calculate);
+        calculate();
+
+        function fetchMatrix() {
+            fetch('/get_matrix_data')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('matrix_status').innerHTML = `> صانع النظام: EssamElkomy369 | تردد الحقل: ${data.frequency} Hz | عمق الكم: ${data.depth}`;
+            })
+            .catch(err => {
+                document.getElementById('matrix_status').innerHTML = `> صانع النظام: EssamElkomy369 | تردد الحقل: 369.185 Hz | عمق الكم: 23`;
+            });
+        }
+
+        fetchMatrix();
+        setInterval(fetchMatrix, 3000);
+    </script>
+</body>
+</html>
